@@ -1,6 +1,5 @@
-package com.baidu.security;
+package com.baidu.springsecurity.security;
 
-import com.baidu.config.SecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
@@ -18,10 +17,9 @@ public class UserDetailServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         if (!"admin".equals(username)) {
-            throw new UsernameNotFoundException("用户名不存在！");
+            throw new UsernameNotFoundException("没有用户！");
         }
         String pwd = passwordEncoder.encode("123");
-
         return new User(username,pwd, AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
     }
 }
