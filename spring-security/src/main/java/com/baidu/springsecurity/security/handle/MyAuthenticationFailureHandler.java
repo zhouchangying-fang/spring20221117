@@ -1,4 +1,4 @@
-package com.baidu.springsecurity.security;
+package com.baidu.springsecurity.security.handle;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.core.AuthenticationException;

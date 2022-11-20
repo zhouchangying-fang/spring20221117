@@ -1,8 +1,7 @@
-package com.baidu.springsecurity.security;
+package com.baidu.springsecurity.security.user;
 
+import com.baidu.springsecurity.security.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,12 +13,16 @@ public class UserDetailServiceImpl implements UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private UserMapper userMapper;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         if (!"admin".equals(username)) {
             throw new UsernameNotFoundException("没有用户！");
         }
-        String pwd = passwordEncoder.encode("123");
-        return new User(username,pwd, AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
+        User user = userMapper.loadUserByUsername(username);
+        user.setRoles(userMapper.getRolesByUid(user.getId()));
+        return user;
     }
 }
