@@ -24,4 +24,10 @@
         where r.id = ur.rid
           and ur.uid = #{uid}
     </select>
+
+    <update id="updatePassword">
+        update `user` set password=#{password}
+        where username=#{username}
+    </update>
+
 </mapper>

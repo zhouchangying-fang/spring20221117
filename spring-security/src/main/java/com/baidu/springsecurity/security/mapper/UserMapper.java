@@ -12,4 +12,6 @@ public interface UserMapper {
     User loadUserByUsername(@Param("username") String username);
 
     List<Role> getRolesByUid(@Param("uid") Integer uid);
+
+    Integer updatePassword(@Param("username") String username,@Param("password") String password);
 }

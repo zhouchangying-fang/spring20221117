@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -35,7 +36,7 @@ public class SpringSecurity {
     }
 
     @Bean
-    public LoginFilter loginFilter(){
+    public LoginFilter loginFilter(AuthenticationManager authenticationManager){
         LoginFilter loginFilter = new LoginFilter();
         loginFilter.setPasswordParameter("password");
         loginFilter.setUsernameParameter("username");
@@ -48,18 +49,17 @@ public class SpringSecurity {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        return http
+            http
                 .csrf().disable()
                 .authorizeRequests(authorize -> authorize
                         .antMatchers("/login.html").permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin().loginPage("/login.html").loginProcessingUrl("/login")
-                .successHandler(new MyAuthenticationSuccessHandler())
-                .failureHandler(new MyAuthenticationFailureHandler())
+                .formLogin().loginPage("/login.html")
                 .and().logout().logoutSuccessHandler(new MyLogoutSuccessHandler())
-                .and().userDetailsService(userDetailService)
-                .build();
+                .and().userDetailsService(userDetailService);
+         http.addFilterAt(loginFilter(http.getSharedObject(AuthenticationManager.class)), UsernamePasswordAuthenticationFilter.class);
+         return http.build();
     }
 
     @Bean
